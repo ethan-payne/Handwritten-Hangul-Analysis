@@ -18,6 +18,8 @@ class DataWrapper:
         self.train_df = None
 
         # Check if data has been previiusly been extracted (i.e. if csv exists)
+        self._write_csv()
+        self._load_csv()
     
     def _write_csv(self):
         """
@@ -35,13 +37,15 @@ class DataWrapper:
 
         # Convert arrays into dataframe
         self.df = pd.DataFrame({"image_name" : image_names, "labels" : labels})
-        self.df.to_csv("\Data\handwritten_hangul.csv")
+        self.df.to_csv(str(self.path) + "\handwritten_hangul.csv")
         
 
     def _load_csv(self):
         """
         Private helper function to load already existing csvr
         """
+        self.df = pd.read_csv(str(self.path) + "\handwritten_hangul.csv")
+
 
     def _train_test_split(self):
         """
