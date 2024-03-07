@@ -4,27 +4,30 @@ Wrapper module to work with the Handwritten Hangul dataset.
 
 import os
 import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
 
 class DataWrapper:
-    def __init__(self, raw_data_path: str, output_path: str, seed: int):
+    def __init__(self, raw_data_path: str, output_path: str, train_size: float, rand_seed: int):
         """
         DataWrapper class initialisation
         """
 
         self.raw_data_path = raw_data_path
         self.output_path = output_path
-        self.seed = seed
+        self.train_size = train_size
+        self.rand_seed = rand_seed
         self.df = None
         self.test_df = None
         self.train_df = None
 
-        # Check if data has been previiusly been extracted (i.e. if csv exists)
+        self.__extract_data()
         self.__write_csv()
         self.__load_csv()
     
-    def __write_csv(self):
+    def __extract_data(self):
         """
-        Private helper function to write extracted data to csv
+        Private helper function to write extract raw data from file path
         """
 
         image_names = []
@@ -35,23 +38,37 @@ class DataWrapper:
             if (image_name.endswith(".jpg")):
                 image_names.append(image_name)
                 labels.append(image_name.split("_")[0])
-
-        # Convert arrays into dataframe
         self.df = pd.DataFrame({"image_name" : image_names, "labels" : labels})
-        self.df.to_csv(str(self.output_path) + "\handwritten_hangul.csv", index = False)
+
+        self.__train_test_split(X = image_names, Y = labels)
+    
+    def __write_csv(self):
+        """
+        Private helper function to write extracted data to csv
+        """
         
+        self.df.to_csv(str(self.output_path) + "\\handwritten_hangul.csv", index = False)
+        self.train_df.to_csv(str(self.output_path) +  "\\train_handwritten_hangul.csv", index = False)
+        self.test_df.to_csv(str(self.output_path) +  "\\test_handwritten_hangul.csv", index = False)
 
     def __load_csv(self):
         """
         Private helper function to load already existing csvr
         """
-        self.df = pd.read_csv(str(self.output_path) + "\handwritten_hangul.csv")
+        self.df = pd.read_csv(str(self.output_path) + "\\handwritten_hangul.csv")
+        self.train_df = pd.read_csv(str(self.output_path) + "\\train_handwritten_hangul.csv")
+        self.test_df = pd.read_csv(str(self.output_path) + "\\test_handwritten_hangul.csv")
 
 
-    def __train_test_split(self):
+    def __train_test_split(self, X, Y):
         """
-        Helper function to 
+        Private helper function to peform a train/test split
         """
+
+        X_train, X_test, y_train, y_test = train_test_split(X, Y, train_size = self.train_size, random_state = self.rand_seed, stratify = Y)
+        self.train_df = pd.DataFrame({"image_name" : X_train, "labels" : y_train})
+        self.test_df = pd.DataFrame({"image_name" : X_test, "labels" : y_test})
+        
 
     
     def load_image(self, image_name: str):
