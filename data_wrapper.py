@@ -6,22 +6,23 @@ import os
 import pandas as pd
 
 class DataWrapper:
-    def __init__(self, path: str, seed: int):
+    def __init__(self, raw_data_path: str, output_path: str, seed: int):
         """
         DataWrapper class initialisation
         """
 
-        self.path = path
+        self.raw_data_path = raw_data_path
+        self.output_path = output_path
         self.seed = seed
         self.df = None
         self.test_df = None
         self.train_df = None
 
         # Check if data has been previiusly been extracted (i.e. if csv exists)
-        self._write_csv()
-        self._load_csv()
+        self.__write_csv()
+        self.__load_csv()
     
-    def _write_csv(self):
+    def __write_csv(self):
         """
         Private helper function to write extracted data to csv
         """
@@ -30,27 +31,28 @@ class DataWrapper:
         labels = []
     
         # Loop through files in directory and file path and character
-        for image_name in os.listdir(self.path):
+        for image_name in os.listdir(self.raw_data_path):
             if (image_name.endswith(".jpg")):
                 image_names.append(image_name)
                 labels.append(image_name.split("_")[0])
 
         # Convert arrays into dataframe
         self.df = pd.DataFrame({"image_name" : image_names, "labels" : labels})
-        self.df.to_csv(str(self.path) + "\handwritten_hangul.csv")
+        self.df.to_csv(str(self.output_path) + "\handwritten_hangul.csv")
         
 
-    def _load_csv(self):
+    def __load_csv(self):
         """
         Private helper function to load already existing csvr
         """
-        self.df = pd.read_csv(str(self.path) + "\handwritten_hangul.csv")
+        self.df = pd.read_csv(str(self.output_path) + "\handwritten_hangul.csv")
 
 
-    def _train_test_split(self):
+    def __train_test_split(self):
         """
         Helper function to 
         """
+
     
     def load_image(self, image_name: str):
         """
