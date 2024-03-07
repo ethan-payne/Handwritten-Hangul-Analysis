@@ -38,7 +38,7 @@ class DataWrapper:
 
         # Convert arrays into dataframe
         self.df = pd.DataFrame({"image_name" : image_names, "labels" : labels})
-        self.df.to_csv(str(self.output_path) + "\handwritten_hangul.csv")
+        self.df.to_csv(str(self.output_path) + "\handwritten_hangul.csv", index = False)
         
 
     def __load_csv(self):
