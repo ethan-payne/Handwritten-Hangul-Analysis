@@ -6,6 +6,9 @@ import os
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_sample_image
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
 
 class DataWrapper:
     def __init__(self, raw_data_path: str, output_path: str, train_size: float, rand_seed: int):
@@ -71,7 +74,19 @@ class DataWrapper:
         
 
     
-    def load_image(self, image_name: str):
+    def load_image(self, image_name: str) -> np.ndarray:
         """
-        Helper function to load an image from file name and return as array
+        Function to load an image from file name and return as array
         """
+
+        image = mpimg.imread(self.raw_data_path + "\\" + image_name)
+
+        return(image)
+    
+    def plot_image(self, image: np.ndarray, scale = False, axis = False):
+        if scale:
+            plt.rcParams["figure.figsize"] = (image.shape[0]/50.0, image.shape[1]/50.0)
+        if not axis:
+            plt.axis("off")
+        plt.imshow(image, cmap="gray", interpolation="nearest")
+        plt.show()
