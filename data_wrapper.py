@@ -34,13 +34,14 @@ class DataWrapper:
         self.x_test = None
         self.y_test = None
 
-        self.__extract_data()
+        self.__extract_dataframe()
         self.__write_csv()
         self.__load_csv()
+        self.__load_data()
     
-    def __extract_data(self):
+    def __extract_dataframe(self):
         """
-        Private helper function to write extract raw data from file path
+        Private helper function to write extract raw data from file path to dataframe
         """
     
         # Loop through files in directory and file path and character
@@ -48,11 +49,12 @@ class DataWrapper:
             if (image_name.endswith(".jpg")):
                 self.image_names.append(image_name)
                 self.labels.append(image_name.split("_")[0])
+        
+        # Do a train/test split and create dataframes
+        X_train, X_test, y_train, y_test = train_test_split(self.image_names, self.labels, train_size = self.train_size, random_state = self.rand_seed, stratify = self.labels)
         self.df = pd.DataFrame({"image_name" : self.image_names, "labels" : self.labels})
-
-        # self.x_full = np.array(self.image_names)
-
-        self.__train_test_split(X = self.image_names, Y = self.labels)
+        self.train_df = pd.DataFrame({"image_name" : X_train, "labels" : y_train})
+        self.test_df = pd.DataFrame({"image_name" : X_test, "labels" : y_test})
     
     def __write_csv(self):
         """
@@ -71,16 +73,18 @@ class DataWrapper:
         self.train_df = pd.read_csv(str(self.output_path) + "\\train_handwritten_hangul.csv")
         self.test_df = pd.read_csv(str(self.output_path) + "\\test_handwritten_hangul.csv")
 
-
-    def __train_test_split(self, X, Y):
+    def __load_data(self):
         """
-        Private helper function to peform a train/test split
+        Private helper function to load data into arrays and perform a train/test split
         """
 
-        X_train, X_test, y_train, y_test = train_test_split(X, Y, train_size = self.train_size, random_state = self.rand_seed, stratify = Y)
-        self.train_df = pd.DataFrame({"image_name" : X_train, "labels" : y_train})
-        self.test_df = pd.DataFrame({"image_name" : X_test, "labels" : y_test})
-
+        self.x_full = self.load_images(self.image_names)
+        self.y_full = np.array(self.labels)
+        self.x_train, self.x_test, self.y_train, self.y_test = train_test_split(self.x_full,
+                                                                                self.y_full,
+                                                                                train_size = self.train_size,
+                                                                                random_state = self.rand_seed,
+                                                                                stratify = self.labels)
     
     def load_image(self, image_name: str) -> np.ndarray:
         """
@@ -91,8 +95,17 @@ class DataWrapper:
 
         return(image)
     
-    def load_images(self, image_names: str):
-        pass
+    def load_images(self, image_names: list) -> np.ndarray:
+        """
+        Function to load multiple images fromn file name and return as an array
+        """
+
+        images = []
+        for image_name in image_names:
+            images.append(self.load_image(image_name))
+
+        return np.array(images)
+        
     
     def plot_image(self, image_name: str, scale = False, axis = False):
         """
