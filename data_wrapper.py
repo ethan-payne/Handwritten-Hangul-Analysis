@@ -37,6 +37,7 @@ class DataWrapper:
         self.__extract_dataframe()
         self.__write_csv()
         self.__load_csv()
+
         self.__load_data()
     
     def __extract_dataframe(self):
@@ -93,7 +94,7 @@ class DataWrapper:
 
         image = mpimg.imread(self.raw_data_path + "\\" + image_name)
 
-        return(image)
+        return(image / 255.0)
     
     def load_images(self, image_names: list) -> np.ndarray:
         """
