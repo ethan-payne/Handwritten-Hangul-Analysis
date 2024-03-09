@@ -85,7 +85,7 @@ class DataWrapper:
     
     def plot_image(self, image: np.ndarray, scale = False, axis = False):
         if scale:
-            plt.rcParams["figure.figsize"] = (image.shape[0]/50.0, image.shape[1]/50.0)
+            plt.rcParams["figure.figsize"] = (image.shape[0]/28.0, image.shape[1]/28.0)
         if not axis:
             plt.axis("off")
         plt.imshow(image, cmap="gray", interpolation="nearest")
