@@ -91,6 +91,9 @@ class DataWrapper:
 
         return(image)
     
+    def load_images(self, image_names: str):
+        pass
+    
     def plot_image(self, image_name: str, scale = False, axis = False):
         """
         Function to load and plot an image
