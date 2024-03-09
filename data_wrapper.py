@@ -83,7 +83,15 @@ class DataWrapper:
 
         return(image)
     
-    def plot_image(self, image: np.ndarray, scale = False, axis = False):
+    def plot_image(self, image_name: str, scale = False, axis = False):
+        """
+        Function to load and plot an image
+        """
+
+        # Load image
+        image = self.load_image(image_name=image_name)
+
+        # Plot image
         if scale:
             plt.rcParams["figure.figsize"] = (image.shape[0]/28.0, image.shape[1]/28.0)
         if not axis:
