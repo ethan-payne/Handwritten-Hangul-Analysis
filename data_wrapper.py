@@ -19,9 +19,20 @@ class DataWrapper:
         self.output_path = output_path
         self.train_size = train_size
         self.rand_seed = rand_seed
+
+        self.image_names = []
+        self.labels = []
+        
         self.df = None
         self.test_df = None
         self.train_df = None
+
+        self.x_full = None
+        self.y_full = None
+        self.x_train = None
+        self.y_train = None
+        self.x_test = None
+        self.y_test = None
 
         self.__extract_data()
         self.__write_csv()
@@ -31,18 +42,17 @@ class DataWrapper:
         """
         Private helper function to write extract raw data from file path
         """
-
-        image_names = []
-        labels = []
     
         # Loop through files in directory and file path and character
         for image_name in os.listdir(self.raw_data_path):
             if (image_name.endswith(".jpg")):
-                image_names.append(image_name)
-                labels.append(image_name.split("_")[0])
-        self.df = pd.DataFrame({"image_name" : image_names, "labels" : labels})
+                self.image_names.append(image_name)
+                self.labels.append(image_name.split("_")[0])
+        self.df = pd.DataFrame({"image_name" : self.image_names, "labels" : self.labels})
 
-        self.__train_test_split(X = image_names, Y = labels)
+        # self.x_full = np.array(self.image_names)
+
+        self.__train_test_split(X = self.image_names, Y = self.labels)
     
     def __write_csv(self):
         """
@@ -70,7 +80,6 @@ class DataWrapper:
         X_train, X_test, y_train, y_test = train_test_split(X, Y, train_size = self.train_size, random_state = self.rand_seed, stratify = Y)
         self.train_df = pd.DataFrame({"image_name" : X_train, "labels" : y_train})
         self.test_df = pd.DataFrame({"image_name" : X_test, "labels" : y_test})
-        
 
     
     def load_image(self, image_name: str) -> np.ndarray:
