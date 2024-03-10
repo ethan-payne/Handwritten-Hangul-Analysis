@@ -3,6 +3,7 @@ A module to build various neural network architectures
 """
 
 from keras import models, layers
+from datetime import datetime
 
 class MiniVGG:
     def __init__(self, input_shape: tuple, num_labels: int):
@@ -36,3 +37,20 @@ class MiniVGG:
         self.model.add(layers.BatchNormalization(momentum=0.9))
         self.model.add(layers.Dropout(rate=0.5)) 
         self.model.add(layers.Dense(self.num_labels, activation='softmax')) # 30 label classes
+
+    def save_model(self):
+        """
+        Save the MiniVGG network to disk
+        """
+        
+        dt_now = datetime.now()
+        dt_str = dt_now.strftime("%d.%m.%Y_%H%M%S")
+
+        self.model.save("Models\\MiniVGG\\" + dt_str + "_MiniVGG.keras")
+
+    def load_model(self, file_name: str):
+        """
+        Loads a MiniVGG network from disk
+        """
+
+        self.model = models.load_model(file_name)
