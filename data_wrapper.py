@@ -1,6 +1,6 @@
-'''
-Wrapper module to work with the Handwritten Hangul dataset.
-'''
+"""
+A data wrapper module to process the Handwritten Hangul dataset.
+"""
 
 import os
 import pandas as pd
@@ -11,15 +11,17 @@ import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 
 class DataWrapper:
-    def __init__(self, raw_data_path: str, output_path: str, train_size: float, rand_seed: int):
+    def __init__(self, raw_data_path: str, output_path: str, rand_seed: int):
         """
         DataWrapper class initialisation
         """
 
         self.raw_data_path = raw_data_path
         self.output_path = output_path
-        self.train_size = train_size
         self.rand_seed = rand_seed
+
+        self.train_size = 0.8
+        self.val_size = 0.5 # 0.5 * 0.2 = 0.1
 
         self.image_names = []
         self.labels = []
@@ -33,6 +35,8 @@ class DataWrapper:
         self.y_full = None
         self.x_train = None
         self.y_train = None
+        self.x_val = None
+        self.y_val = None
         self.x_test = None
         self.y_test = None
 
@@ -80,18 +84,25 @@ class DataWrapper:
 
     def __load_data(self):
         """
-        Private helper function to load data into arrays and perform a train/test split
+        Private helper function to load data into arrays and perform a train/test/val split
         """
 
         self.x_full = self.load_images(self.image_names)
         self.y_full = np.array(self.labels)
         self.x_train, self.x_test, y_train, y_test = train_test_split(self.x_full,
-                                                                                self.y_full,
-                                                                                train_size = self.train_size,
-                                                                                random_state = self.rand_seed,
-                                                                                stratify = self.labels)
+                                                                        self.y_full,
+                                                                        train_size = self.train_size,
+                                                                        random_state = self.rand_seed,
+                                                                        stratify = self.y_full)
+        
+        self.x_test, self.x_val, y_test, y_val = train_test_split(self.x_test,
+                                                                    y_test,
+                                                                    train_size=self.val_size,
+                                                                    random_state=self.rand_seed,
+                                                                    stratify=self.y_test)
         
         self.y_train = self.__encode(y_train)
+        self.y_val = self.__encode(y_val)
         self.y_test = self.__encode(y_test)
     
     def __encode(self, array: np.ndarray) -> np.ndarray:

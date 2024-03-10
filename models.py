@@ -1,4 +1,7 @@
-import tensorflow as tf
+"""
+A module to build various neural network architectures
+"""
+
 from keras import models, layers
 
 class MiniVGG:
