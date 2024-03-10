@@ -6,6 +6,7 @@ import os
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 
@@ -22,6 +23,7 @@ class DataWrapper:
 
         self.image_names = []
         self.labels = []
+        self.classes = None
         
         self.df = None
         self.test_df = None
@@ -50,6 +52,8 @@ class DataWrapper:
             if (image_name.endswith(".jpg")):
                 self.image_names.append(image_name)
                 self.labels.append(image_name.split("_")[0])
+        
+        self.classes = pd.unique(self.labels)
         
         # Do a train/test split and create dataframes
         X_train, X_test, y_train, y_test = train_test_split(self.image_names, self.labels, train_size = self.train_size, random_state = self.rand_seed, stratify = self.labels)
@@ -81,18 +85,32 @@ class DataWrapper:
 
         self.x_full = self.load_images(self.image_names)
         self.y_full = np.array(self.labels)
-        self.x_train, self.x_test, self.y_train, self.y_test = train_test_split(self.x_full,
+        self.x_train, self.x_test, y_train, y_test = train_test_split(self.x_full,
                                                                                 self.y_full,
                                                                                 train_size = self.train_size,
                                                                                 random_state = self.rand_seed,
                                                                                 stratify = self.labels)
+        
+        self.y_train = self.__encode(y_train)
+        self.y_test = self.__encode(y_test)
+    
+    def __encode(self, array: np.ndarray) -> np.ndarray:
+        """
+        Private helper function to encode a one-hot vector of the labels
+        """
+
+        le = LabelEncoder()
+        le.fit(self.classes)
+        
+        return le.transform(array)
+
     
     def load_image(self, image_name: str) -> np.ndarray:
         """
         Function to load an image from file name and return as array
         """
 
-        image = mpimg.imread(self.raw_data_path + "\\" + image_name)
+        image = np.array(mpimg.imread(self.raw_data_path + "\\" + image_name))
 
         return(image / 255.0)
     
