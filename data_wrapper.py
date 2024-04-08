@@ -70,9 +70,9 @@ class DataWrapper:
         Private helper function to write extracted data to csv
         """
         
-        self.df.to_csv(str(self.output_path) + "\\handwritten_hangul.csv", index = False)
-        self.train_df.to_csv(str(self.output_path) +  "\\train_handwritten_hangul.csv", index = False)
-        self.test_df.to_csv(str(self.output_path) +  "\\test_handwritten_hangul.csv", index = False)
+        self.df.to_csv(str(self.output_path) + "\\handwritten_hangul.csv", index=False)
+        self.train_df.to_csv(str(self.output_path) +  "\\train_handwritten_hangul.csv", index=False)
+        self.test_df.to_csv(str(self.output_path) +  "\\test_handwritten_hangul.csv", index=False)
 
     def __load_csv(self):
         """
@@ -91,9 +91,9 @@ class DataWrapper:
         self.y_full = np.array(self.labels)
         self.x_train, self.x_test, y_train, y_test = train_test_split(self.x_full,
                                                                         self.y_full,
-                                                                        train_size = self.train_size,
-                                                                        random_state = self.rand_seed,
-                                                                        stratify = self.y_full)
+                                                                        train_size=self.train_size,
+                                                                        random_state=self.rand_seed,
+                                                                        stratify=self.y_full)
         
         self.x_test, self.x_val, y_test, y_val = train_test_split(self.x_test,
                                                                     y_test,
