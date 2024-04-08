@@ -48,7 +48,7 @@ class DataWrapper:
     
     def __extract_dataframe(self):
         """
-        Private helper function to write extract raw data from file path to dataframe
+        Private helper function to extract raw data from file path to dataframe
         """
     
         # Loop through files in directory and file path and character
@@ -76,7 +76,7 @@ class DataWrapper:
 
     def __load_csv(self):
         """
-        Private helper function to load already existing csvr
+        Private helper function to load already existing csv
         """
         self.df = pd.read_csv(str(self.output_path) + "\\handwritten_hangul.csv")
         self.train_df = pd.read_csv(str(self.output_path) + "\\train_handwritten_hangul.csv")
@@ -142,10 +142,8 @@ class DataWrapper:
         Function to load and plot an image
         """
 
-        # Load image
         image = self.load_image(image_name=image_name)
 
-        # Plot image
         if scale:
             plt.rcParams["figure.figsize"] = (image.shape[0]/28.0, image.shape[1]/28.0)
         if not axis:
