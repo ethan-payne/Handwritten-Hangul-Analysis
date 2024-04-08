@@ -137,7 +137,7 @@ class DataWrapper:
         return np.array(images)
         
     
-    def plot_image(self, image_name: str, scale = False, axis = False):
+    def plot_image(self, image_name: str, scale=False, axis=False):
         """
         Function to load and plot an image
         """
