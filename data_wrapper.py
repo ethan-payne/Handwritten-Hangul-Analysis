@@ -21,7 +21,7 @@ class DataWrapper:
         self.rand_seed = rand_seed
 
         self.train_size = 0.8
-        self.val_size = 0.5 # 0.5 * 0.2 = 0.1
+        self.val_size = 0.5 # 0.5 * (1 - 0.8) = 0.1 -> 10% of data is in validation
 
         self.image_names = []
         self.labels = []
